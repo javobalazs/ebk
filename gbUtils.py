@@ -27,7 +27,7 @@ def convert2lifted(lat, long):
     longMD_r = np.empty([rows, cols-1], dtype=float)
     params = np.empty([rows, 3], dtype=float)
     for i in range(rows):
-        (length, angled, param, angle, latM, longM, latMD, longMD) = cv.convert2(lat.iloc[i], long.iloc[i])
+        (length, angled, param, angle, latM, longM, latMD, longMD) = cv.convert2(lat[i], long[i])
         straight[i], flipped[i], x = cv.convert2PairInput(length, angled)
         params[i] = param
         length_r[i] = length
@@ -92,8 +92,8 @@ class gbUtils:
         self.angled = angled
         self.params = params
         self.angle = angle
-        self.lat = np.array(lat)
-        self.long = np.array(long)
+        self.lat = lat
+        self.long = long
         self.latM = latM
         self.longM = longM
         self.latMD = latMD
@@ -162,6 +162,8 @@ class gbUtils:
         return platr, plongr,platr, plongr
 
 def model_build(lat, long, predictedPathLength, verbose=True, randomState=1, testSize=0.1):
+    lat = np.array(lat)
+    long = np.array(long)
     if verbose:
         print("model_build, predictedPathLength: ", predictedPathLength)
         print("model_build, lat, rows: ",
