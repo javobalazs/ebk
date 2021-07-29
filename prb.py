@@ -18,15 +18,17 @@ print("test set long dims: ", mo.long.shape)
 
 # print(mo.lat)
 
+# mlat = (mo.lat)[0:1, :-5]
+# mlong = (mo.long)[0:1, :-5]
 mlat = (mo.lat)[:, :-5]
 mlong = (mo.long)[:, :-5]
 print("test set lat dims: ", mlat.shape)
 print("test set long dims: ", mlong.shape)
 
 s,f,l,a = mo.ll_predict(mlat, mlong)
-print("original: ", mo.lat)
+print("original: ", mlat)
 print("predicted s:", s)
-print("original: ", mo.long)
+print("original: ", mlong)
 print("predicted f:", f)
 
 

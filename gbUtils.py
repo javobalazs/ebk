@@ -116,7 +116,8 @@ class gbUtils:
             ms = self.model_straight[i]
             mf = self.model_flipped[i]
             if p == ms[0]:
-                print("predict for path: ", p)
+                if verbose:
+                    print("predict for path: ", p)
                 ps = ms[1].predict(rstraight)
                 ps = np.reshape(ps, [rows, 1])
                 pf = mf[1].predict(rflipped)
@@ -132,9 +133,8 @@ class gbUtils:
     def ll_predict(self, lat, long, verbose=True):
         rows = lat.shape[0]
         path = lat.shape[1]
-        p = int(path/2)
         if verbose:
-            print("ll_predict: rows:", rows, ", points: ", p)
+            print("ll_predict: rows:", rows, ", points: ", path)
         straight = np.empty([rows, (path - 2)*2], dtype=float)
         flipped = np.empty([rows, (path - 2)*2], dtype=float)
         params = np.empty([rows, 3], dtype=float)
@@ -151,14 +151,14 @@ class gbUtils:
         while i < rows:
             # pred_lat, pred_long, x = cv.convertFrom(pred_l[i], pred_a[i], (param[i,0], param[i,1], param[i,2]))
             pred_lat, pred_long, x = cv.convertFrom(pred_l[i], pred_a[i], params[i])
-            pred_lat = np.reshape(pred_lat, [rows, 1])
-            pred_long = np.reshape(pred_long, [rows, 1])
+            pred_lat = np.reshape(pred_lat, [1, pred_lat.shape[0]])
+            pred_long = np.reshape(pred_long, [1, pred_long.shape[0]])
 
             pred_lat_r.append(pred_lat)
             pred_long_r.append(pred_long)
             i += 1
-        platr = np.concatenate(pred_lat_r, axis=1)
-        plongr = np.concatenate(pred_long_r, axis=1)
+        platr = np.concatenate(pred_lat_r)
+        plongr = np.concatenate(pred_long_r)
         return platr, plongr,platr, plongr
 
 def model_build(lat, long, predictedPathLength, verbose=True, randomState=1, testSize=0.1):
