@@ -33,6 +33,11 @@ print("predicted s:", s)
 print("original: ", mlong)
 print("predicted f:", f)
 
+# print("original full:", mo.lat)
+# print("predicted full: ", l)
+# print("original full:", mo.long)
+# print("predicted full: ", a)
+
 mo.save_model("sandbox/valami")
 
 
