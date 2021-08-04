@@ -5,6 +5,7 @@ from pandas import read_csv
 from xgboost import XGBRegressor
 import pandas as pd
 import numpy as np
+import json
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -160,6 +161,50 @@ class gbUtils:
         platr = np.concatenate(pred_lat_r)
         plongr = np.concatenate(pred_long_r)
         return platr, plongr,platr, plongr
+
+    def save_model(self, fname):
+        l = len(self.model_straight)
+        min = self.model_straight[0][0]
+        max = self.model_straight[l - 1][0]
+
+        # Saving the descriptor
+        descriptor = fname + "_descriptor.json"
+        okay = False
+        try:
+            with open(descriptor, 'w') as f:
+                json.dump([min, max], f)
+                okay = True
+                print("save_model: ", descriptor, " saved")
+        except (IOError, ValueError, EOFError) as e:
+            print("save_model: ", descriptor, " failed, exception: ", e)
+        except:
+            print("save_model: ", descriptor, " failed")
+        # finally:
+        #     print("save_model: ", descriptor, " saved")
+
+        # Saving the models
+        models = [["s", self.model_straight], ["f", self.model_flipped]]
+        j = 0
+        while j < len(models) and okay:
+            curr = models[j]
+            i = 0
+            dsk = curr[0]
+            x = curr[1]
+            while i < l and okay:
+                curri = x[i]
+                fn = fname + "_" + dsk + "_" + str(curri[0]) + "_.json"
+                okay = False
+                try:
+                    curri[1].save_model(fn)
+                    print("save_model: submodel ", fn, " saved")
+                    okay = True
+                except (IOError, ValueError, EOFError) as e:
+                    print("save_model: submodel ", fn, " failed, exception: ", e)
+                except:
+                    print("save_model: submodel ", fn, " failed")
+                i += 1
+            j += 1
+        return okay
 
 def model_build(lat, long, predictedPathLength, verbose=True, randomState=1, testSize=0.1):
     lat = np.array(lat)
