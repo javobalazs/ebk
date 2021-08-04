@@ -182,6 +182,10 @@ class gbUtils:
         # finally:
         #     print("save_model: ", descriptor, " saved")
 
+        # Hat asszem ez felesleges :)
+        if not okay:
+            return False
+
         # Saving the models
         models = [["s", self.model_straight], ["f", self.model_flipped]]
         j = 0
@@ -205,6 +209,56 @@ class gbUtils:
                 i += 1
             j += 1
         return okay
+
+def load_model(fname):
+    # Load descriptor
+    descriptor = fname + "_descriptor.json"
+    okay = False
+    try:
+        with open(descriptor, 'r') as f:
+            dobj = json.load(f)
+            okay = True
+            min = dobj[0]
+            max = dobj[1]
+            print("load_model: ", descriptor, " loaded: ", min, " -> ", max)
+    except (IOError, ValueError, EOFError) as e:
+        print("load_model: ", descriptor, " failed, exception: ", e)
+    except:
+        print("load_model: ", descriptor, " failed")
+
+    if not okay:
+        return None
+
+    # Load individual models
+    straight = []
+    flipped = []
+    models = [["s", straight], ["f", flipped]]
+    j = 0
+    while j < len(models) and okay:
+        curr = models[j]
+        i = min
+        dsk = curr[0]
+        x = curr[1]
+        while i <= max and okay:
+            fn = fname + "_" + dsk + "_" + str(i) + "_.json"
+            okay = False
+            try:
+                mm = XGBRegressor()
+                mm.load_model(fn)
+                print("load_model: submodel ", fn, " loaded")
+                x.append([i, mm])
+                okay = True
+            except (IOError, ValueError, EOFError) as e:
+                print("load_model: submodel ", fn, " failed, exception: ", e)
+            except:
+                print("load_model: submodel ", fn, " failed")
+            i += 1
+        j += 1
+    if okay:
+        # gbUtils with dummy construction parameters
+        return gbUtils([], [], [], [], [], [], [], [], [], [], [], [], straight, flipped)
+    else:
+        return None
 
 def model_build(lat, long, predictedPathLength, verbose=True, randomState=1, testSize=0.1):
     lat = np.array(lat)

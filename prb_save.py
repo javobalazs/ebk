@@ -12,16 +12,18 @@ latFileName = "routes_EBK_2_orig_lat.csv"
 lat = gb.readFile(latFileName)
 #latTable.drop(axis = 1, labels = [10, 11, 12, 13, 14], inplace = True)
 
-mo = gb.model_build(lat, long, 5, testSize=0.0005)
+predicted_path = 5
+
+mo = gb.model_build(lat, long, predicted_path, testSize=0.0005)
 print("test set lat dims: ", mo.lat.shape)
 print("test set long dims: ", mo.long.shape)
 
 # print(mo.lat)
 
-# mlat = (mo.lat)[0:1, :-5]
-# mlong = (mo.long)[0:1, :-5]
-mlat = (mo.lat)[:, :-5]
-mlong = (mo.long)[:, :-5]
+# mlat = (mo.lat)[0:1, :-predicted_path]
+# mlong = (mo.long)[0:1, :-predicted_path]
+mlat = (mo.lat)[:, :-predicted_path]
+mlong = (mo.long)[:, :-predicted_path]
 print("test set lat dims: ", mlat.shape)
 print("test set long dims: ", mlong.shape)
 
@@ -30,6 +32,8 @@ print("original: ", mlat)
 print("predicted s:", s)
 print("original: ", mlong)
 print("predicted f:", f)
+
+mo.save_model("sandbox/valami")
 
 
 # inputTableSimple = []
