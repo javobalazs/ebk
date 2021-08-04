@@ -3,4 +3,5 @@
 /sandbox/*
 !/sandbox/.gitignore
 !/sandbox/diff.sh
+!/sandbox/README.md
 
