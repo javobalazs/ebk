@@ -6,14 +6,29 @@
 
 Egy pelda a model letrehozasara a betanitassal es a lementessel egyutt.
 
-A mentes:
+### Letrehozas
 
 ```python
-# ...
 import gbUtils as gb
-# ...
-mo = gb.model_build(lat, long, predicted_path, testSize=0.0005)
-# ...
+long = gb.readFile("routes_EBK_2_orig_long.csv")
+lat = gb.readFile("routes_EBK_2_orig_lat.csv")
+mo = gb.model_build(lat, long, 5, testSize=0.0005)
+```
+
+### Prediktalas
+
+```python
+mlat = (lat)[5454:5459, :-predicted_path]
+mlong = (long)[5454:5459, :-predicted_path]
+s,f, l,a = mo.ll_predict(mlat, mlong)
+```
+
+- `s`: a josolt lat-szegmens.
+- `f`: a josolt long-szegmens.
+
+### Mentes
+
+```python
 mo.save_model("sandbox/valami")
 ```
 
@@ -40,7 +55,7 @@ illetve annak hasznalatara.
 Tovabba ujra lementi a modelt mas neven,
 es a ket mentes osszehasonlithato (ez utobbira a `sandbox/diff.sh` fajl szolgal).
 
-A betoltes:
+### Betoltes
 
 ```python
 # ...
