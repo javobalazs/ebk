@@ -160,7 +160,8 @@ class gbUtils:
             i += 1
         platr = np.concatenate(pred_lat_r)
         plongr = np.concatenate(pred_long_r)
-        return platr, plongr,platr, plongr
+        # return platr, plongr, np.concatenate([lat, platr], axis=1), np.concatenate([long, plongr], axis=1)
+        return platr, plongr, platr, plongr
 
     def save_model(self, fname):
         l = len(self.model_straight)
